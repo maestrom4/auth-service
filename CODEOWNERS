@@ -9,4 +9,4 @@
 #/tests/      @test-team
 
 # Assign code owners for all files in the repository
-*            @maestrom4 @
+*            @maestrom4 @skyNetManager
