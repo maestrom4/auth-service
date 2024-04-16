@@ -1,0 +1,2 @@
+# auth-service
+auth / authorization
