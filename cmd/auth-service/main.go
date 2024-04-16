@@ -1,20 +1,33 @@
+// File: cmd/main.go
 package main
 
 import (
-	"auth-service/internal/app"
-	"auth-service/internal/routes"
 	"log"
 	"net/http"
+
+	"github.com/graph-gophers/graphql-go"
+	"github.com/graph-gophers/graphql-go/relay"
 )
 
+type query struct{}
+
+func (_ *query) Hello() string {
+	return "Hello, world!"
+}
+
 func main() {
-	app.Initialize()
+	schema := `
+        type Query {
+            hello: String!
+        }
+    `
 
-	mux := http.NewServeMux()
+	parsedSchema, err := graphql.ParseSchema(schema, &query{})
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	routes.Configure(mux)
-
-	address := ":8080"
-	log.Printf("Server running on http://localhost%s/", address)
-	log.Fatal(http.ListenAndServe(address, mux))
+	http.Handle("/graphql", &relay.Handler{Schema: parsedSchema})
+	log.Println("GraphQL server running on http://localhost:8080/graphql")
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
