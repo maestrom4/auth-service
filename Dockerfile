@@ -1,23 +1,45 @@
-FROM golang:1.19 AS builder
-
+FROM golang:1.18 AS builder
 
 WORKDIR /app
 
-COPY go.* ./
+COPY go.mod .
+COPY go.sum .
+
 RUN go mod download
 
-COPY ./cmd/auth-service/main.go ./cmd/auth-service/
+COPY . .
 
-
-RUN CGO_ENABLED=0 GOOS=linux go build -o /auth-service ./cmd/auth-service/main.go
+RUN CGO_ENABLED=0 GOOS=linux go build -buildvcs=false -o /auth-service ./cmd/auth-service/
 
 
 FROM alpine:latest
+WORKDIR /root/
 
-WORKDIR /
 
-COPY --from=builder /auth-service /auth-service
+COPY --from=builder /auth-service .
 
-EXPOSE 8080
 
-CMD ["/auth-service"]
+CMD ["./auth-service"]
+
+# FROM golang:1.18 AS builder
+
+# WORKDIR /app
+
+# COPY go.mod .
+# COPY go.sum .
+
+# RUN go mod download
+
+# COPY . .
+
+# RUN CGO_ENABLED=0 GOOS=linux go build -buildvcs=false -o /uth-service ./cmd/uth-service/
+
+
+# FROM alpine:latest
+# WORKDIR /root/
+
+
+# COPY --from=builder /auth-service .
+
+
+# CMD ["./auth-service"]

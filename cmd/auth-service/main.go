@@ -1,33 +1,23 @@
-// File: cmd/main.go
 package main
 
 import (
-	"log"
-	"net/http"
+	"auth-service/internal/config"
+	logger "auth-service/internal/middleware"
+	"auth-service/internal/routes"
 
-	"github.com/graph-gophers/graphql-go"
-	"github.com/graph-gophers/graphql-go/relay"
+	"github.com/gin-gonic/gin"
+	log "github.com/sirupsen/logrus"
 )
 
-type query struct{}
-
-func (_ *query) Hello() string {
-	return "Hello, world!"
-}
-
 func main() {
-	schema := `
-        type Query {
-            hello: String!
-        }
-    `
+	log.SetLevel(log.DebugLevel)
+	config.ConnectDB()
+	router := gin.Default()
 
-	parsedSchema, err := graphql.ParseSchema(schema, &query{})
-	if err != nil {
-		log.Fatal(err)
-	}
+	router.Use(logger.GinLogger())
+	routes.RegisterRoutes(router)
 
-	http.Handle("/graphql", &relay.Handler{Schema: parsedSchema})
-	log.Println("GraphQL server running on http://localhost:8080/graphql")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	logger.Log.Info("GraphQL server starting on http://localhost:8085/graphql")
+
+	router.Run(":8080")
 }
