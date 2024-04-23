@@ -20,8 +20,9 @@ var QueryType = graphql.NewObject(graphql.ObjectConfig{
 var MutationType = graphql.NewObject(graphql.ObjectConfig{
 	Name: "Mutation",
 	Fields: graphql.Fields{
-		"addUser":    userMut,
-		"updateUser": UserUpdateMut,
-		"deleteUser": UserDelMut,
+		"register":   RegistrationMutx,
+		"addUser":    UserMutx,
+		"updateUser": UserUpdateMutx,
+		"deleteUser": UserDelMutx,
 	},
 })

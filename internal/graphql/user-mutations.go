@@ -8,7 +8,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var userMut = &graphql.Field{
+var UserMutx = &graphql.Field{
 	Type: gql.UserType,
 	Args: graphql.FieldConfigArgument{
 		"name": &graphql.ArgumentConfig{
@@ -31,7 +31,7 @@ var userMut = &graphql.Field{
 	},
 }
 
-var UserUpdateMut = &graphql.Field{
+var UserUpdateMutx = &graphql.Field{
 	Type: gql.UserType,
 	Args: graphql.FieldConfigArgument{
 		"_id": &graphql.ArgumentConfig{
@@ -57,7 +57,7 @@ var UserUpdateMut = &graphql.Field{
 	},
 }
 
-var UserDelMut = &graphql.Field{
+var UserDelMutx = &graphql.Field{
 	Type: graphql.Boolean,
 	Args: graphql.FieldConfigArgument{
 		"_id": &graphql.ArgumentConfig{

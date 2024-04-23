@@ -5,6 +5,8 @@ type User struct {
 	Username       string `bson:"username"`
 	Email          string `bson:"email"`
 	HashedPassword string `bson:"hashed_password"`
+	CreatedAt      string
+	LastLogin      string
 	// FirstName      string `bson:"firstname"`
 	// LastName       string `bson:"lastname"`
 	// CreateAt       string `bson:"createAt"`
