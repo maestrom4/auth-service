@@ -2,6 +2,7 @@ package graphql
 
 import (
 	"auth-service/internal/models"
+	gql "auth-service/internal/types"
 	"auth-service/utils"
 	"errors"
 
@@ -9,12 +10,9 @@ import (
 )
 
 var RegistrationMutx = &graphql.Field{
-	Type: graphql.String,
+	Type: RegistrationResponseType,
 	Args: graphql.FieldConfigArgument{
 		"username": &graphql.ArgumentConfig{
-			Type: graphql.NewNonNull(graphql.String),
-		},
-		"email": &graphql.ArgumentConfig{
 			Type: graphql.NewNonNull(graphql.String),
 		},
 		"password": &graphql.ArgumentConfig{
@@ -22,21 +20,11 @@ var RegistrationMutx = &graphql.Field{
 		},
 	},
 	Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-		// username, _ := p.Args["username"].(string)
-		// email, _ := p.Args["email"].(string)
-		// password, _ := p.Args["password"].(string)
-
-		// hashedPassword, err := hashPassword(password)
-		// if err != nil {
-		// 	return nil, err
-		// }
-
 		resolver, ok := p.Context.Value("resolver").(*Resolver)
 		if !ok {
 			return nil, errors.New("could not get the resolver from the context")
 		}
 
-		// now := time.Now().Format(time.RFC3339)
 		user, err := resolver.AddUserResolver(p)
 		if err != nil {
 			return nil, err
@@ -51,6 +39,23 @@ var RegistrationMutx = &graphql.Field{
 		if err != nil {
 			return nil, errors.New("could not create token")
 		}
-		return token, nil
+		// return token, nil
+		response := gql.RegistrationResponse{
+			Token:  token,
+			UserId: userObj.ID,
+		}
+		return response, nil
 	},
 }
+
+var RegistrationResponseType = graphql.NewObject(graphql.ObjectConfig{
+	Name: "RegistrationResponse",
+	Fields: graphql.Fields{
+		"token": &graphql.Field{
+			Type: graphql.NewNonNull(graphql.String),
+		},
+		"userId": &graphql.Field{
+			Type: graphql.NewNonNull(graphql.String),
+		},
+	},
+})

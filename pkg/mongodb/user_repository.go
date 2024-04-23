@@ -40,11 +40,10 @@ func (ur *UserRepository) GetUserByID(ctx context.Context, id string) (*models.U
 	return &user, nil
 }
 
-func (ur *UserRepository) AddUser(ctx context.Context, username, email, hashedPassword string) (*models.User, error) {
+func (ur *UserRepository) AddUser(ctx context.Context, username, hashedPassword string) (*models.User, error) {
 	now := time.Now().Format(time.RFC3339)
 	user := models.User{
 		Username:       username,
-		Email:          email,
 		HashedPassword: hashedPassword,
 		CreatedAt:      now,
 		LastLogin:      now,
