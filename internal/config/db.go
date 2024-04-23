@@ -22,17 +22,17 @@ func ConnectDB() {
 
 	CollectionUser = os.Getenv("MONGO_INITDB_COLLECTION")
 
-	mongoURI := os.Getenv("MONGO_URI")
+	// mongoURI := os.Getenv("MONGO_URI")
 	log.Info("GraphQL server starting on http://localhost:8082/graphql")
 	log.Debugln("username: ", username)
 	log.Debugln("password: ", password)
 	log.Debugln("database: ", database)
 	log.Debugln("collection: ", CollectionUser)
-	log.Debugln("mongoURI: ", mongoURI)
+	log.Debugln("mongoURI: ", MongoUrl)
 
 	// Connect to MongoDB
 	var err error
-	DB, err = mongo.Connect(context.TODO(), options.Client().ApplyURI(mongoURI))
+	DB, err = mongo.Connect(context.TODO(), options.Client().ApplyURI(MongoUrl))
 	if err != nil {
 		log.Fatalf("Failed to connect to MongoDB: %v", err)
 	}

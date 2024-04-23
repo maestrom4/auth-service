@@ -1,7 +1,7 @@
 package main
 
 import (
-	"auth-service/internal/config"
+	cfg "auth-service/internal/config"
 	logger "auth-service/internal/middleware"
 	"auth-service/internal/routes"
 
@@ -11,7 +11,8 @@ import (
 
 func main() {
 	log.SetLevel(log.DebugLevel)
-	config.ConnectDB()
+	cfg.ConfigInit()
+	cfg.ConnectDB()
 	router := gin.Default()
 
 	router.Use(logger.GinLogger())

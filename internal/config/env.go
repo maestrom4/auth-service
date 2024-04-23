@@ -1,12 +1,17 @@
 package config
 
-// func init() {
-// 	// Load environment variables when this package is imported.
-// 	CollectionUser = os.Getenv("MONGO_INITDB_COLLECTION")
-// 	if CollectionUser == "" {
-// 		log.Fatal("MONGO_INITDB_COLLECTION environment variable is not set")
-// 	}
+import "os"
 
-// 	// Log for confirmation
-// 	log.Printf("CollectionUser set to: %s", CollectionUser)
-// }
+var (
+	Username string
+	Password string
+	Database string
+	MongoUrl string
+)
+
+func ConfigInit() {
+	Username = os.Getenv("MONGO_INITDB_ROOT_USERNAME")
+	Password = os.Getenv("MONGO_INITDB_ROOT_PASSWORD")
+	Database = os.Getenv("MONGO_INITDB_DATABASE")
+	MongoUrl = os.Getenv("MONGO_URI")
+}
