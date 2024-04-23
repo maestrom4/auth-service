@@ -3,6 +3,7 @@ package graphql
 import (
 	cfg "auth-service/internal/config"
 	"auth-service/pkg/mongodb"
+	"auth-service/utils"
 	"errors"
 	"fmt"
 
@@ -29,15 +30,15 @@ func (r *Resolver) UserResolver(p graphql.ResolveParams) (interface{}, error) {
 
 func (r *Resolver) AddUserResolver(p graphql.ResolveParams) (interface{}, error) {
 	username, _ := p.Args["username"].(string)
-	email, _ := p.Args["email"].(string)
+	// email, _ := p.Args["email"].(string)
 	password, _ := p.Args["password"].(string)
 
-	hashedPassword, err := hashPassword(password)
+	hashedPassword, err := utils.HashPassword(password)
 	if err != nil {
 		return nil, err
 	}
 
-	user, err := r.UserRepository.AddUser(p.Context, username, email, hashedPassword)
+	user, err := r.UserRepository.AddUser(p.Context, username, hashedPassword)
 	if err != nil {
 		return nil, err
 	}
