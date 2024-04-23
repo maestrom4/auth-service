@@ -1,25 +1,18 @@
 package routes
 
 import (
-<<<<<<< Updated upstream
-	"auth-service/internal/app"
-	"net/http"
-=======
-	gql "auth-service/internal/graphql"
+	"auth-service/internal/graphql"
+	glq "auth-service/internal/graphql"
 	mdlwr "auth-service/internal/middleware"
 	"context"
->>>>>>> Stashed changes
 
-	"github.com/graph-gophers/graphql-go/relay"
+	"github.com/gin-gonic/gin"
+	"github.com/graphql-go/handler"
 )
 
-<<<<<<< Updated upstream
-func Configure(mux *http.ServeMux) {
-	mux.Handle("/graphql", &relay.Handler{Schema: app.Schema})
-=======
 func GraphQLHandler() gin.HandlerFunc {
 	h := handler.New(&handler.Config{
-		Schema:   &gql.Schema,
+		Schema:   &graphql.Schema,
 		Pretty:   true,
 		GraphiQL: true,
 	})
@@ -34,7 +27,7 @@ func GraphQLHandler() gin.HandlerFunc {
 
 func RegisterRoutes(router *gin.Engine) {
 	h := handler.New(&handler.Config{
-		Schema:   &gql.Schema,
+		Schema:   &glq.Schema,
 		Pretty:   true,
 		GraphiQL: true,
 	})
@@ -42,5 +35,4 @@ func RegisterRoutes(router *gin.Engine) {
 	router.POST("/graphql", GraphQLHandler())
 	// router.POST("/graphql", gin.WrapH(h))
 	router.GET("/graphql", gin.WrapH(h))
->>>>>>> Stashed changes
 }

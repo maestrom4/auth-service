@@ -34,7 +34,7 @@ func ConnectDB() {
 		log.Fatalf("Failed to ping MongoDB: %v", err)
 	}
 
-	log.Println("Connected to MongoDB!")
+	log.Infoln("Connected to MongoDB!")
 }
 
 func GetDBCollection(collectionName string) *mongo.Collection {

@@ -7,7 +7,7 @@ import (
 	"github.com/graphql-go/graphql"
 )
 
-var LoginQuerySchema = &graphql.Field{
+var UserQuerySchema = &graphql.Field{
 	Type: gql.UserType,
 	Args: graphql.FieldConfigArgument{
 		"_id": &graphql.ArgumentConfig{
