@@ -9,9 +9,12 @@ RUN go mod download
 COPY ./cmd/auth-service/main.go ./cmd/auth-service/
 
 
+<<<<<<< Updated upstream
 RUN CGO_ENABLED=0 GOOS=linux go build -o /auth-service ./cmd/auth-service/main.go
 
 
+=======
+>>>>>>> Stashed changes
 FROM alpine:latest
 
 WORKDIR /

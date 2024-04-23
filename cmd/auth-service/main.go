@@ -2,18 +2,32 @@
 package main
 
 import (
+<<<<<<< Updated upstream
 	"log"
 	"net/http"
+=======
+	cfg "auth-service/internal/config"
+	logger "auth-service/internal/middleware"
+	"auth-service/internal/routes"
+>>>>>>> Stashed changes
 
 	"github.com/graph-gophers/graphql-go"
 	"github.com/graph-gophers/graphql-go/relay"
 )
 
+<<<<<<< Updated upstream
 type query struct{}
 
 func (_ *query) Hello() string {
 	return "Hello, world!"
 }
+=======
+func main() {
+	cfg.ConfigInit()
+	log.SetLevel(log.DebugLevel)
+	cfg.ConnectDB()
+	router := gin.Default()
+>>>>>>> Stashed changes
 
 func main() {
 	schema := `
