@@ -1,14 +1,11 @@
 package graphql
 
 import (
-	cfg "auth-service/internal/config"
 	"auth-service/internal/models"
+	"auth-service/utils"
 	"errors"
-	"time"
 
-	"github.com/dgrijalva/jwt-go"
 	"github.com/graphql-go/graphql"
-	"golang.org/x/crypto/bcrypt"
 )
 
 var RegistrationMutx = &graphql.Field{
@@ -50,24 +47,10 @@ var RegistrationMutx = &graphql.Field{
 			return nil, errors.New("user ID is unavailable")
 		}
 
-		token, err := createToken(userObj.ID)
+		token, err := utils.CreateToken(userObj.ID)
 		if err != nil {
 			return nil, errors.New("could not create token")
 		}
 		return token, nil
 	},
-}
-
-func hashPassword(password string) (string, error) {
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	return string(hashedPassword), err
-}
-
-func createToken(userID string) (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"userID": userID,
-		"exp":    time.Now().Add(24 * time.Hour).Unix(),
-	})
-	tokenString, err := token.SignedString([]byte(cfg.SaltPassKey))
-	return tokenString, err
 }
