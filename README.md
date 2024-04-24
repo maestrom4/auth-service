@@ -11,11 +11,11 @@ npm install
 npm start
 
 docker build -t auth-service .
-docker run -p 8080:8080 --name file-gen-service file-gen-service
+docker run -p 8085:8080 --name file-gen-service file-gen-service
 
 # if to local registry
 docker build -t localhost:5000/auth-service:latest .
-docker run -p 8080:8080 localhost:5000/auth-service:latest
+docker run -p 8085:8080 localhost:5000/auth-service:latest
 ```
 Test the api 
 ```bash
