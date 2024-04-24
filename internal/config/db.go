@@ -3,7 +3,6 @@ package config
 import (
 	"context"
 
-	"os"
 	"time"
 
 	log "github.com/sirupsen/logrus"
@@ -12,11 +11,9 @@ import (
 )
 
 var DB *mongo.Client
-var CollectionUser string
 
 func ConnectDB() {
 
-	CollectionUser = os.Getenv("MONGO_INITDB_COLLECTION")
 	log.Info("GraphQL server starting on http://localhost:8082/graphql")
 
 	// Connect to MongoDB
@@ -38,5 +35,5 @@ func ConnectDB() {
 }
 
 func GetDBCollection(collectionName string) *mongo.Collection {
-	return DB.Database(os.Getenv("MONGO_INITDB_DATABASE")).Collection(collectionName)
+	return DB.Database(Database).Collection(collectionName)
 }

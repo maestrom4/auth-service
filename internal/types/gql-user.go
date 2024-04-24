@@ -1,4 +1,4 @@
-package gqltypes
+package types
 
 import (
 	"auth-service/internal/models"

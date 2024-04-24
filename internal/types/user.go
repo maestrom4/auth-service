@@ -1,4 +1,4 @@
-package gqltypes
+package types
 
 type RegistrationResponse struct {
 	Token  string `json:"token"`
