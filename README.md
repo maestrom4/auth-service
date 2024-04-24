@@ -1,7 +1,7 @@
 # Auth Service
 
 ## Overview
-This service handles file generation.
+This service handles Authentication, Authorization, registration.
 
 ## Setup with docker
 To run this project, install it locally using npm:
