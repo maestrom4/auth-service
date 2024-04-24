@@ -30,9 +30,12 @@ func (r *Resolver) UserResolver(p graphql.ResolveParams) (interface{}, error) {
 
 func (r *Resolver) AddUserResolver(p graphql.ResolveParams) (interface{}, error) {
 	username, _ := p.Args["username"].(string)
-	// email, _ := p.Args["email"].(string)
 	password, _ := p.Args["password"].(string)
 
+	existingUser, _ := r.UserRepository.GetUserByUsername(p.Context, username)
+	if existingUser != nil {
+		return nil, errors.New("username already taken")
+	}
 	hashedPassword, err := utils.HashPassword(password)
 	if err != nil {
 		return nil, err

@@ -86,3 +86,16 @@ func (ur *UserRepository) DeleteUser(ctx context.Context, id string) error {
 	_, err = ur.Collection.DeleteOne(ctx, bson.M{"_id": objID})
 	return err
 }
+
+func (ur *UserRepository) GetUserByUsername(ctx context.Context, username string) (*models.User, error) {
+	var user models.User
+	filter := bson.M{"username": username}
+	err := ur.Collection.FindOne(ctx, filter).Decode(&user)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return &user, nil
+}
