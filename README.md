@@ -24,4 +24,13 @@ curl http://localhost:8080/api/health
 ```bash
 response { "message": "Hello from the API!" }
 ```
-check the logs also
+''check the logs also''
+
+### Postman testing
+![GitHub Logo](https://github.com/maestrom4/Bundy-management-microservice/blob/develop/bundyRevamp3.jpg?raw=true)
+
+- Click collections
+- Click new select Graphql
+- Always click the reload button highlighted in the screenshot.
+- Tick/untick the checkbox query/mutation schema 
+- Click Query
