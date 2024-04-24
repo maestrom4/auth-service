@@ -10,6 +10,7 @@ var (
 	SaltPassKey    string
 	JwtSecretKey   string
 	CollectionUser string
+	MongoUsersPort string
 )
 
 func ConfigInit() {
@@ -20,4 +21,5 @@ func ConfigInit() {
 	SaltPassKey = os.Getenv("SALT_PASS_KEY")
 	JwtSecretKey = os.Getenv("JWT_SECRET_KEY")
 	CollectionUser = os.Getenv("MONGO_INITDB_COLLECTION")
+	MongoUsersPort = os.Getenv("MONGO_USERS_PORT")
 }

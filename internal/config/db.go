@@ -2,6 +2,7 @@ package config
 
 import (
 	"context"
+	"fmt"
 
 	"time"
 
@@ -14,7 +15,8 @@ var DB *mongo.Client
 
 func ConnectDB() {
 
-	log.Info("GraphQL server starting on http://localhost:8082/graphql")
+	serverURL := fmt.Sprintf("http://localhost:%d/graphql", MongoUsersPort)
+	log.Debugln("GraphQL server starting on", serverURL)
 
 	// Connect to MongoDB
 	var err error
@@ -31,7 +33,7 @@ func ConnectDB() {
 		log.Fatalf("Failed to ping MongoDB: %v", err)
 	}
 
-	log.Println("Connected to MongoDB!")
+	log.Infoln("Connected to MongoDB!")
 }
 
 func GetDBCollection(collectionName string) *mongo.Collection {
