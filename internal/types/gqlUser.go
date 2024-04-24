@@ -27,6 +27,9 @@ var StringType = graphql.NewScalar(graphql.ScalarConfig{
 var UserType = graphql.NewObject(graphql.ObjectConfig{
 	Name: "User",
 	Fields: graphql.Fields{
+		"id": &graphql.Field{
+			Type: graphql.String,
+		},
 		"username": &graphql.Field{
 			Type: graphql.String,
 		},
@@ -40,6 +43,12 @@ var UserType = graphql.NewObject(graphql.ObjectConfig{
 			},
 		},
 		"email": &graphql.Field{
+			Type: graphql.String,
+		},
+		"createdAt": &graphql.Field{
+			Type: graphql.String,
+		},
+		"lastLogin": &graphql.Field{
 			Type: graphql.String,
 		},
 	},

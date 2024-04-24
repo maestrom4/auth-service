@@ -4,8 +4,8 @@ import (
 	"auth-service/internal/models"
 	"context"
 	"errors"
+	"time"
 
-	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -40,19 +40,25 @@ func (ur *UserRepository) GetUserByID(ctx context.Context, id string) (*models.U
 	return &user, nil
 }
 
-func (ur *UserRepository) AddUser(ctx context.Context, username, email string, hashedPassword string) (*models.User, error) {
-	user := models.User{Username: username, Email: email, HashedPassword: hashedPassword}
-	log.Debugln("user_repo: ", user)
+func (ur *UserRepository) AddUser(ctx context.Context, username, hashedPassword string) (*models.User, error) {
+	now := time.Now().Format(time.RFC3339)
+	user := models.User{
+		Username:       username,
+		HashedPassword: hashedPassword,
+		CreatedAt:      now,
+		LastLogin:      now,
+	}
+
 	result, err := ur.Collection.InsertOne(ctx, user)
 	if err != nil {
 		return nil, err
 	}
 
-	if oid, ok := result.InsertedID.(primitive.ObjectID); ok {
-		user.ID = oid.Hex()
-	} else {
+	oid, ok := result.InsertedID.(primitive.ObjectID)
+	if !ok {
 		return nil, errors.New("failed to convert InsertedID to ObjectID")
 	}
+	user.ID = oid.Hex()
 
 	return &user, nil
 }

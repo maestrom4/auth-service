@@ -3,11 +3,11 @@ package graphql
 import (
 	cfg "auth-service/internal/config"
 	"auth-service/pkg/mongodb"
+	"auth-service/utils"
 	"errors"
 	"fmt"
 
 	"github.com/graphql-go/graphql"
-	log "github.com/sirupsen/logrus"
 )
 
 type Resolver struct {
@@ -29,17 +29,40 @@ func (r *Resolver) UserResolver(p graphql.ResolveParams) (interface{}, error) {
 }
 
 func (r *Resolver) AddUserResolver(p graphql.ResolveParams) (interface{}, error) {
-	name, _ := p.Args["name"].(string)
-	email, _ := p.Args["email"].(string)
-	hashedPassword, _ := p.Args["hashed_password"].(string)
-	log.Debugln("hashedPassword: ", hashedPassword)
-	user, err := r.UserRepository.AddUser(p.Context, name, email, hashedPassword)
+	username, _ := p.Args["username"].(string)
+	// email, _ := p.Args["email"].(string)
+	password, _ := p.Args["password"].(string)
+
+	hashedPassword, err := utils.HashPassword(password)
 	if err != nil {
 		return nil, err
 	}
-	log.Debugln("user: ", user)
+
+	user, err := r.UserRepository.AddUser(p.Context, username, hashedPassword)
+	if err != nil {
+		return nil, err
+	}
+
+	// Ensure that ID is being set properly
+	if user.ID == "" {
+		return nil, errors.New("failed to obtain user ID after creation")
+	}
+
 	return user, nil
 }
+
+// func (r *Resolver) AddUserResolver(p graphql.ResolveParams) (interface{}, error) {
+// 	name, _ := p.Args["name"].(string)
+// 	email, _ := p.Args["email"].(string)
+// 	hashedPassword, _ := p.Args["hashed_password"].(string)
+// 	log.Debugln("hashedPassword: ", hashedPassword)
+// 	user, err := r.UserRepository.AddUser(p.Context, name, email, hashedPassword)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	log.Debugln("user: ", user)
+// 	return user, nil
+// }
 
 func (r *Resolver) UpdateUserResolver(p graphql.ResolveParams) (interface{}, error) {
 	id, idOk := p.Args["_id"].(string)

@@ -15,20 +15,9 @@ var DB *mongo.Client
 var CollectionUser string
 
 func ConnectDB() {
-	// Construct the MongoDB URI using environment variables
-	username := os.Getenv("MONGO_INITDB_ROOT_USERNAME")
-	password := os.Getenv("MONGO_INITDB_ROOT_PASSWORD")
-	database := os.Getenv("MONGO_INITDB_DATABASE")
 
 	CollectionUser = os.Getenv("MONGO_INITDB_COLLECTION")
-
-	// mongoURI := os.Getenv("MONGO_URI")
 	log.Info("GraphQL server starting on http://localhost:8082/graphql")
-	log.Debugln("username: ", username)
-	log.Debugln("password: ", password)
-	log.Debugln("database: ", database)
-	log.Debugln("collection: ", CollectionUser)
-	log.Debugln("mongoURI: ", MongoUrl)
 
 	// Connect to MongoDB
 	var err error

@@ -15,5 +15,14 @@ func ResolverMiddleware() gin.HandlerFunc {
 		}
 		c.Set("resolver", resolver)
 		c.Next()
+		// Extending resolver middleware will back to this approach figuring out
+		// userRepo := mongodb.NewUserRepository(cfg.GetDBCollection(cfg.CollectionUser))
+
+		// employeeRepo := mongodb.NewEmployeeRepository(cfg.GetDBCollection(cfg.CollectionEmployee))
+
+		// resolver := &graphql.Resolver{
+		// 	UserRepository:    userRepo,
+		// 	EmployeeRepository: employeeRepo,
+		// }
 	}
 }
