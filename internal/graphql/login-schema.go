@@ -16,7 +16,7 @@ var LoginQuerySchema = &graphql.Field{
 				Type: graphql.String,
 			},
 			"user": &graphql.Field{
-				Type: gql.UserType, // Make sure UserType is correctly defined and imported
+				Type: gql.UserType,
 			},
 		},
 	}),

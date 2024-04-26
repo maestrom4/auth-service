@@ -114,25 +114,23 @@ func (r *Resolver) LoginResolver(p graphql.ResolveParams) (gql.LoginResponse, er
 	user, err := userRepository.GetUserByUsername(p.Context, username)
 	log.Debugln("user: ", user)
 	if err != nil {
-		return gql.LoginResponse{}, fmt.Errorf("failed to retrieve user: %v", err) // More informative error
+		return gql.LoginResponse{}, fmt.Errorf("failed to retrieve user: %v", err)
 	}
 	if user == nil || user.ID == "" {
-		return gql.LoginResponse{}, errors.New("username or password is incorrect or user ID is missing") // Added ID check
+		return gql.LoginResponse{}, errors.New("username or password is incorrect or user ID is missing")
 	}
 
-	// Check if the provided password is correct
 	isPasswordCorrect := utils.CheckPasswordHash(password, user.HashedPassword)
 	if !isPasswordCorrect {
-		return gql.LoginResponse{}, errors.New("username or password is incorrect") // Password does not match
+		return gql.LoginResponse{}, errors.New("username or password is incorrect")
 	}
 
 	// Generate JWT token
 	token, err := utils.CreateToken(user.ID, cfg.JwtSecretKey)
 	if err != nil {
-		return gql.LoginResponse{}, fmt.Errorf("failed to create token: %v", err) // More informative error
+		return gql.LoginResponse{}, fmt.Errorf("failed to create token: %v", err)
 	}
 
-	// Return the token and user data
 	return gql.LoginResponse{
 		Token:    token,
 		ID:       user.ID,
