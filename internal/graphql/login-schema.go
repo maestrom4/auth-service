@@ -5,26 +5,41 @@ import (
 	"errors"
 
 	"github.com/graphql-go/graphql"
+	log "github.com/sirupsen/logrus"
 )
 
 var LoginQuerySchema = &graphql.Field{
-	Type: gql.UserType,
+	Type: graphql.NewObject(graphql.ObjectConfig{
+		Name: "LoginResponse",
+		Fields: graphql.Fields{
+			"token": &graphql.Field{
+				Type: graphql.String,
+			},
+			"user": &graphql.Field{
+				Type: gql.UserType,
+			},
+		},
+	}),
 	Args: graphql.FieldConfigArgument{
-		"_id": &graphql.ArgumentConfig{
+		"username": &graphql.ArgumentConfig{
+			Type: graphql.NewNonNull(graphql.String),
+		},
+		"password": &graphql.ArgumentConfig{
 			Type: graphql.NewNonNull(graphql.String),
 		},
 	},
 	Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-		id, ok := p.Args["_id"].(string)
-		if !ok {
-			return nil, errors.New("invalid user ID")
-		}
 
 		resolver, ok := p.Context.Value("resolver").(*Resolver)
 		if !ok {
-			return nil, errors.New("could not get resolver from context")
+			return nil, errors.New("could not get the resolver from the context")
 		}
+		user, err := resolver.LoginResolver(p)
+		if err != nil {
+			return nil, err
+		}
+		log.Debugln("user: ", user)
 
-		return resolver.UserRepository.GetUserByID(p.Context, id)
+		return user, nil
 	},
 }

@@ -37,7 +37,7 @@ func GinLogger() gin.HandlerFunc {
 			"method":      method,
 			"path":        path,
 			"user_agent":  userAgent,
-		}).Info("handled request")
+		}).Debugln("handled request")
 	}
 }
 

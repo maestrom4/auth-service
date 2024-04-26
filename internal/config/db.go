@@ -17,14 +17,14 @@ func ConnectDB() {
 
 	serverURL := fmt.Sprintf("http://localhost:%d/graphql", MongoUsersPort)
 	log.Debugln("GraphQL server starting on", serverURL)
-
+	log.Debugln("MongoUrl: ", MongoUrl)
 	// Connect to MongoDB
 	var err error
 	DB, err = mongo.Connect(context.TODO(), options.Client().ApplyURI(MongoUrl))
 	if err != nil {
 		log.Fatalf("Failed to connect to MongoDB: %v", err)
 	}
-
+	log.Debugln("DB: ", DB)
 	// Check the connection
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
