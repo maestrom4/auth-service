@@ -33,3 +33,8 @@ func CreateToken(userID string, saltPassKey string) (string, error) {
 
 	return tokenString, nil
 }
+
+func CheckPasswordHash(password, hash string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return err == nil
+}

@@ -11,6 +11,7 @@ var (
 	JwtSecretKey   string
 	CollectionUser string
 	MongoUsersPort string
+	LogLevel       string
 )
 
 func ConfigInit() {
@@ -22,4 +23,5 @@ func ConfigInit() {
 	JwtSecretKey = os.Getenv("JWT_SECRET_KEY")
 	CollectionUser = os.Getenv("MONGO_INITDB_COLLECTION")
 	MongoUsersPort = os.Getenv("MONGO_USERS_PORT")
+	LogLevel = os.Getenv("LOG_LEVEL")
 }

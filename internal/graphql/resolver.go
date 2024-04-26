@@ -2,12 +2,14 @@ package graphql
 
 import (
 	cfg "auth-service/internal/config"
+	gql "auth-service/internal/types"
 	"auth-service/pkg/mongodb"
 	"auth-service/utils"
 	"errors"
 	"fmt"
 
 	"github.com/graphql-go/graphql"
+	log "github.com/sirupsen/logrus"
 )
 
 type Resolver struct {
@@ -102,4 +104,38 @@ func (r *Resolver) DeleteUserResolver(p graphql.ResolveParams) (interface{}, err
 		return nil, fmt.Errorf("error deleting user: %v", err)
 	}
 	return true, nil
+}
+
+func (r *Resolver) LoginResolver(p graphql.ResolveParams) (gql.LoginResponse, error) {
+	username, _ := p.Args["username"].(string)
+	password, _ := p.Args["password"].(string)
+
+	userRepository := mongodb.NewUserRepository(cfg.GetDBCollection(cfg.CollectionUser))
+	user, err := userRepository.GetUserByUsername(p.Context, username)
+	log.Debugln("user: ", user)
+	if err != nil {
+		return gql.LoginResponse{}, fmt.Errorf("failed to retrieve user: %v", err) // More informative error
+	}
+	if user == nil || user.ID == "" {
+		return gql.LoginResponse{}, errors.New("username or password is incorrect or user ID is missing") // Added ID check
+	}
+
+	// Check if the provided password is correct
+	isPasswordCorrect := utils.CheckPasswordHash(password, user.HashedPassword)
+	if !isPasswordCorrect {
+		return gql.LoginResponse{}, errors.New("username or password is incorrect") // Password does not match
+	}
+
+	// Generate JWT token
+	token, err := utils.CreateToken(user.ID, cfg.JwtSecretKey)
+	if err != nil {
+		return gql.LoginResponse{}, fmt.Errorf("failed to create token: %v", err) // More informative error
+	}
+
+	// Return the token and user data
+	return gql.LoginResponse{
+		Token:    token,
+		ID:       user.ID,
+		Username: user.Username,
+	}, nil
 }

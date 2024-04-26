@@ -9,9 +9,13 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func main() {
-	log.SetLevel(log.DebugLevel)
+func init() {
 	cfg.ConfigInit()
+}
+func main() {
+	// cfg.ConfigInit()
+	cfg.InitLogger()
+	log.SetLevel(log.DebugLevel)
 	cfg.ConnectDB()
 	router := gin.Default()
 

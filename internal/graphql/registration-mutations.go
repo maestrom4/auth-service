@@ -1,6 +1,7 @@
 package graphql
 
 import (
+	cfg "auth-service/internal/config"
 	"auth-service/internal/models"
 	gql "auth-service/internal/types"
 	"auth-service/utils"
@@ -35,7 +36,7 @@ var RegistrationMutx = &graphql.Field{
 			return nil, errors.New("user ID is unavailable")
 		}
 
-		token, err := utils.CreateToken(userObj.ID)
+		token, err := utils.CreateToken(userObj.ID, cfg.SaltPassKey)
 		if err != nil {
 			return nil, errors.New("could not create token")
 		}
