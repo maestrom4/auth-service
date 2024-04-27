@@ -58,3 +58,16 @@ To run this project locally, follow these steps:
 3. Click the reload button highlighted in the screenshot to refresh the collection.
 4. Tick/untick the checkbox for query/mutation schema.
 5. Click Query to execute the selected operation.
+
+
+### Explanation of Key Directories:
+
+- **`cmd/auth-service`**: Contains the main application entry point. This is where the service is initialized and run.
+- **`pkg/mongodb`**: Includes all database interaction logic, specifically with MongoDB. For Pure CRUD interaction, but if with logic services folder can be utilized.
+- **`internal`**: Houses application-specific code that shouldn't be exposed externally. This includes business logic, configuration, and routing.
+- **`internal/middleware`**: Middleware functions are located here, handling tasks like authentication and logging across HTTP requests.
+- **`utils`**: Provides utility functions that are widely used throughout the application, such as helpers for authentication and context management.
+- **`tests` and `internal/middleware/tests`**: Contain unit and integration tests ensuring that individual units and the integrated components work correctly.
+
+This structure supports a clean separation of concerns, making the application scalable and maintainable. Each component has a specific role, ensuring that the service remains robust and easy to manage as it grows.
+
