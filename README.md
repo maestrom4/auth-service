@@ -1,19 +1,27 @@
-# Auth Service
-
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 ![GitHub Contributions](https://img.shields.io/github/contributors/maestrom4/time-management-microservices)
 ![GitHub Stars](https://img.shields.io/github/stars/maestrom4/auth-service)
 
-## Overview
-The Auth Service provides functionality for Authentication, Authorization, and user registration.
+# Auth Service
 
-## Technologies Used
-- Golang
-- GraphQL
-- Gin Framework
-- Docker Compose
-- Testify for unit testing
-- Logrus for logging
+## Overview
+The Auth Service is part of a microservices architecture focused on handling authentication and authorization. It facilitates user registration and credential verification, leveraging a range of modern technologies for robust, scalable, and secure implementations.
+
+## Technologies
+- **Go**: A statically typed, compiled programming language designed at Google. Known for its simplicity, efficiency, and excellent support for concurrent operations and microservices.
+- **Gin Framework**: A high-performance web framework for Go that provides a robust set of features for building web applications and microservices.
+- **GraphQL**: A query language for APIs and a runtime for executing those queries with your existing data. GraphQL provides a more efficient, powerful, and flexible alternative to REST.
+- **Docker**: A set of platform-as-a-service products that use OS-level virtualization to deliver software in packages called containers.
+- **Testify**: A Go testing toolkit with common assertions and mocks that plays nicely with the standard library.
+- **Logrus**: A structured logger for Go, completely API compatible with the standard library logger.
+
+## Installation
+
+### Prerequisites
+- Docker
+- Go 1.15 or higher (for local development and testing)
+
+This version should provide a more comprehensive guide for anyone looking to understand or use your Auth Service.
 
 ## Setup with Docker
 To run this project locally, follow these steps:
