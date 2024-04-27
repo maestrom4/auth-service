@@ -1,4 +1,4 @@
-package logger
+package middleware
 
 import (
 	cfg "auth-service/internal/config"
@@ -15,7 +15,7 @@ func ResolverMiddleware() gin.HandlerFunc {
 		}
 		c.Set("resolver", resolver)
 		c.Next()
-		// Extending resolver middleware will back to this approach figuring out
+		// Extending resolver middleware will be back to this approach figuring this out
 		// userRepo := mongodb.NewUserRepository(cfg.GetDBCollection(cfg.CollectionUser))
 
 		// employeeRepo := mongodb.NewEmployeeRepository(cfg.GetDBCollection(cfg.CollectionEmployee))

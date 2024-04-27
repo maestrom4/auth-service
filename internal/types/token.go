@@ -6,3 +6,8 @@ type TokenClaims struct {
 	UserID string `json:"userId"`
 	jwt.RegisteredClaims
 }
+
+type StdTokenClaims struct {
+	jwt.StandardClaims
+	UserId string `json:"userId"`
+}
