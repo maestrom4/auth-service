@@ -10,7 +10,6 @@ jobs:
   build:
     name: Run Tests
     runs-on: ubuntu-latest
-    environment: production # If you have set up GitHub environments, specify the name here.
 
     steps:
     - name: Set up Go
@@ -24,14 +23,15 @@ jobs:
     - name: Get dependencies
       run: go get -v -t -d ./...
 
-    - name: Run tests
-      run: go test ./... -cover -race
+    - name: Run tests with coverage
+      run: go test ./... -coverprofile=coverage.txt -covermode=atomic -race
+      working-directory: ./path/to/your/tests # Update this to the directory containing your Go tests
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v4.0.1
       with:
         token: ${{ secrets.CODECOV_TOKEN }} # Required for private repos
-        file: ./coverage.txt # Ensure this is the path to your coverage file
+        file: ./coverage.txt # Make sure this path is correct
         flags: unittests
         name: codecov-umbrella
         fail_ci_if_error: true
