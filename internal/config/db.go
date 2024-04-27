@@ -2,7 +2,6 @@ package config
 
 import (
 	"context"
-	"fmt"
 
 	"time"
 
@@ -15,7 +14,7 @@ var DB *mongo.Client
 
 func ConnectDB() {
 
-	serverURL := fmt.Sprintf("http://localhost:%d/graphql", MongoUsersPort)
+	serverURL := "http://localhost:8082/graphql"
 	log.Debugln("GraphQL server starting on", serverURL)
 	log.Debugln("MongoUrl: ", MongoUrl)
 	// Connect to MongoDB
