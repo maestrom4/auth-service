@@ -8,6 +8,7 @@
 ## Overview
 The Auth Service is part of a microservices architecture focused on handling authentication and authorization. It facilitates user registration and credential verification, leveraging a range of modern technologies for robust, scalable, and secure implementations.
 
+
 ## Technologies
 - **Go**: A statically typed, compiled programming language designed at Google. Known for its simplicity, efficiency, and excellent support for concurrent operations and microservices.
 - **Gin Framework**: A high-performance web framework for Go that provides a robust set of features for building web applications and microservices.
