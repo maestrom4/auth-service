@@ -20,33 +20,12 @@ func GraphQLHandler() gin.HandlerFunc {
 	})
 
 	return func(c *gin.Context) {
-		// userID := c.MustGet(string(v.UserIDKey))
-		// ctx := context.WithValue(c.Request.Context(), string(v.ResolverKey), c.MustGet(string(v.ResolverKey)))
-		// ctx = context.WithValue(c.Request.Context(), v.UserIDKey, userID)
-		// rWithCtx := c.Request.WithContext(ctx)
-		// h.ServeHTTP(c.Writer, rWithCtx)
-
-		// ctx := context.WithValue(c.Request.Context(), string(v.ResolverKey), c.MustGet(string(v.ResolverKey)))
-		// rWithCtx := c.Request.WithContext(ctx)
-		// h.ServeHTTP(c.Writer, rWithCtx)
 		resolver := c.MustGet(string(v.ResolverKey))
-
-		// Retrieve the userID from Gin's context
 		userID := c.MustGet(string(v.UserIDKey))
-
-		// Start with the request's current context
 		ctx := c.Request.Context()
-
-		// Add the resolver to the context
 		ctx = context.WithValue(ctx, string(v.ResolverKey), resolver)
-
-		// Add the userID to the context
 		ctx = context.WithValue(ctx, string(v.UserIDKey), userID)
-
-		// Create a new request with the updated context
 		rWithCtx := c.Request.WithContext(ctx)
-
-		// Serve the HTTP request with the new context
 		h.ServeHTTP(c.Writer, rWithCtx)
 	}
 }
