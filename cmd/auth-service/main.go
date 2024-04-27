@@ -13,7 +13,7 @@ func init() {
 	cfg.ConfigInit()
 }
 func main() {
-	// cfg.ConfigInit()
+
 	cfg.InitLogger()
 	log.SetLevel(log.DebugLevel)
 	cfg.ConnectDB()

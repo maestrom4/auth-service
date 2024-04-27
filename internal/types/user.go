@@ -9,4 +9,5 @@ type LoginResponse struct {
 	Token    string `json:"token"`
 	ID       string `bson:"_id,omitempty"`
 	Username string `bson:"username"`
+	Message  string `json:"message"`
 }

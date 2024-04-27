@@ -109,7 +109,18 @@ func (r *Resolver) DeleteUserResolver(p graphql.ResolveParams) (interface{}, err
 func (r *Resolver) LoginResolver(p graphql.ResolveParams) (gql.LoginResponse, error) {
 	username, _ := p.Args["username"].(string)
 	password, _ := p.Args["password"].(string)
+	// userAuthorized := p.Context.Value("authorized")
+	userID, _ := utils.GetStringFromContext(p.Context, "userID")
+	userAuthorized, _ := utils.GetBoolFromContext(p.Context, "authorized")
 
+	if userAuthorized {
+		return gql.LoginResponse{
+			Message:  "Already authenticated via token",
+			ID:       userID,
+			Username: username,
+		}, nil
+	}
+	// Proceed if no token or expired n pre
 	userRepository := mongodb.NewUserRepository(cfg.GetDBCollection(cfg.CollectionUser))
 	user, err := userRepository.GetUserByUsername(p.Context, username)
 	log.Debugln("user: ", user)
