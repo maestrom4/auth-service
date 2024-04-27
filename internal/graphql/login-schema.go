@@ -1,7 +1,6 @@
 package graphql
 
 import (
-	gql "auth-service/internal/types"
 	"errors"
 
 	"github.com/graphql-go/graphql"
@@ -9,17 +8,7 @@ import (
 )
 
 var LoginQuerySchema = &graphql.Field{
-	Type: graphql.NewObject(graphql.ObjectConfig{
-		Name: "LoginResponse",
-		Fields: graphql.Fields{
-			"token": &graphql.Field{
-				Type: graphql.String,
-			},
-			"user": &graphql.Field{
-				Type: gql.UserType, // Make sure UserType is correctly defined and imported
-			},
-		},
-	}),
+	Type: LoginResponseType,
 	Args: graphql.FieldConfigArgument{
 		"username": &graphql.ArgumentConfig{
 			Type: graphql.NewNonNull(graphql.String),
@@ -43,3 +32,15 @@ var LoginQuerySchema = &graphql.Field{
 		return user, nil
 	},
 }
+
+var LoginResponseType = graphql.NewObject(graphql.ObjectConfig{
+	Name: "LoginResponse",
+	Fields: graphql.Fields{
+		"token": &graphql.Field{
+			Type: graphql.NewNonNull(graphql.String),
+		},
+		"userId": &graphql.Field{
+			Type: graphql.NewNonNull(graphql.String),
+		},
+	},
+})

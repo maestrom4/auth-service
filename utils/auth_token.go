@@ -5,6 +5,7 @@ import (
 	"auth-service/internal/models"
 	t "auth-service/internal/types"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
@@ -41,4 +42,24 @@ func ValidateToken(tokenString string) (*models.User, error) {
 	}
 
 	return nil, errors.New("invalid token")
+}
+
+func ParseToken(tokenString, secretKey string) (string, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &t.StdTokenClaims{}, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+
+		return []byte(secretKey), nil
+	})
+
+	if err != nil {
+		return "", err
+	}
+
+	if claims, ok := token.Claims.(*t.StdTokenClaims); ok && token.Valid {
+		return claims.UserId, nil
+	} else {
+		return "", err
+	}
 }

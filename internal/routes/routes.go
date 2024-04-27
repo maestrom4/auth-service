@@ -3,7 +3,7 @@ package routes
 import (
 	"auth-service/internal/graphql"
 	glq "auth-service/internal/graphql"
-	mdlwr "auth-service/internal/middleware"
+	mdl "auth-service/internal/middleware"
 	"context"
 
 	"github.com/gin-gonic/gin"
@@ -25,14 +25,16 @@ func GraphQLHandler() gin.HandlerFunc {
 	}
 }
 
-func RegisterRoutes(router *gin.Engine) {
+func RegisterRoutes(r *gin.Engine) {
 	h := handler.New(&handler.Config{
 		Schema:   &glq.Schema,
 		Pretty:   true,
 		GraphiQL: true,
 	})
-	router.Use(mdlwr.ResolverMiddleware())
-	router.POST("/graphql", GraphQLHandler())
+	r.Use(mdl.SecureHeadersMiddleware())
+	r.Use(mdl.ResolverMiddleware())
+	r.Use(mdl.AuthMiddleware())
+	r.POST("/graphql", GraphQLHandler())
 	// router.POST("/graphql", gin.WrapH(h))
-	router.GET("/graphql", gin.WrapH(h))
+	r.GET("/graphql", gin.WrapH(h))
 }
