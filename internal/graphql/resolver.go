@@ -106,47 +106,91 @@ func (r *Resolver) DeleteUserResolver(p graphql.ResolveParams) (interface{}, err
 	return true, nil
 }
 
-func (r *Resolver) LoginResolver(p graphql.ResolveParams) (gql.LoginResponse, error) {
+func (r *Resolver) LoginResolver(p graphql.ResolveParams) (interface{}, error) {
 	username, _ := p.Args["username"].(string)
 	password, _ := p.Args["password"].(string)
-	// userAuthorized := p.Context.Value("authorized")
-	userID, _ := utils.GetStringFromContext(p.Context, "userID")
-	userAuthorized, _ := utils.GetBoolFromContext(p.Context, "authorized")
 
-	if userAuthorized {
+	userID, userIDOk := p.Context.Value(string(cfg.UserIDKey)).(string)
+	log.Debugf("Retrieved userID in resolver: %s, Exists: %t", userID, userIDOk)
+
+	if userIDOk && userID != "" {
 		return gql.LoginResponse{
-			Message:  "Already authenticated via token",
-			ID:       userID,
-			Username: username,
+			Message:    "Already authenticated via token",
+			UserId:     userID,
+			IsLoggedIn: true,
 		}, nil
 	}
-	// Proceed if no token or expired n pre
+
 	userRepository := mongodb.NewUserRepository(cfg.GetDBCollection(cfg.CollectionUser))
 	user, err := userRepository.GetUserByUsername(p.Context, username)
-	log.Debugln("user: ", user)
 	if err != nil {
-		return gql.LoginResponse{}, fmt.Errorf("failed to retrieve user: %v", err) // More informative error
+		return nil, fmt.Errorf("failed to retrieve user: %v", err)
 	}
 	if user == nil || user.ID == "" {
-		return gql.LoginResponse{}, errors.New("username or password is incorrect or user ID is missing") // Added ID check
+		return nil, errors.New("username or password is incorrect or user ID is missing")
 	}
-
-	// Check if the provided password is correct
+	log.Debugln("user: ", user)
+	log.Debugln("userid: ", user.ID)
 	isPasswordCorrect := utils.CheckPasswordHash(password, user.HashedPassword)
 	if !isPasswordCorrect {
-		return gql.LoginResponse{}, errors.New("username or password is incorrect") // Password does not match
+		return nil, errors.New("username or password is incorrect")
 	}
 
-	// Generate JWT token
 	token, err := utils.CreateToken(user.ID, cfg.JwtSecretKey)
 	if err != nil {
-		return gql.LoginResponse{}, fmt.Errorf("failed to create token: %v", err) // More informative error
+		return nil, fmt.Errorf("failed to create token: %v", err)
 	}
 
-	// Return the token and user data
 	return gql.LoginResponse{
-		Token:    token,
-		ID:       user.ID,
-		Username: user.Username,
+		Token:      token,
+		Username:   user.Username,
+		UserId:     user.ID,
+		Message:    "Successfully logged in",
+		IsLoggedIn: true,
 	}, nil
 }
+
+// func (r *Resolver) LoginResolver(p graphql.ResolveParams) (gql.LoginResponse, error) {
+// 	username, _ := p.Args["username"].(string)
+// 	password, _ := p.Args["password"].(string)
+// 	// userAuthorized := p.Context.Value("authorized")
+// 	userID, _ := utils.GetStringFromContext(p.Context, "userID")
+// 	userAuthorized, _ := utils.GetBoolFromContext(p.Context, "authorized")
+
+// 	if userAuthorized {
+// 		return gql.LoginResponse{
+// 			Message:  "Already authenticated via token",
+// 			ID:       userID,
+// 			Username: username,
+// 		}, nil
+// 	}
+// 	// Proceed if no token or expired n pre
+// 	userRepository := mongodb.NewUserRepository(cfg.GetDBCollection(cfg.CollectionUser))
+// 	user, err := userRepository.GetUserByUsername(p.Context, username)
+// 	log.Debugln("user: ", user)
+// 	if err != nil {
+// 		return gql.LoginResponse{}, fmt.Errorf("failed to retrieve user: %v", err) // More informative error
+// 	}
+// 	if user == nil || user.ID == "" {
+// 		return gql.LoginResponse{}, errors.New("username or password is incorrect or user ID is missing") // Added ID check
+// 	}
+
+// 	// Check if the provided password is correct
+// 	isPasswordCorrect := utils.CheckPasswordHash(password, user.HashedPassword)
+// 	if !isPasswordCorrect {
+// 		return gql.LoginResponse{}, errors.New("username or password is incorrect") // Password does not match
+// 	}
+
+// 	// Generate JWT token
+// 	token, err := utils.CreateToken(user.ID, cfg.JwtSecretKey)
+// 	if err != nil {
+// 		return gql.LoginResponse{}, fmt.Errorf("failed to create token: %v", err) // More informative error
+// 	}
+
+// 	// Return the token and user data
+// 	return gql.LoginResponse{
+// 		Token:    token,
+// 		ID:       user.ID,
+// 		Username: user.Username,
+// 	}, nil
+// }

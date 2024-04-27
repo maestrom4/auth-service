@@ -1,6 +1,8 @@
 package config
 
-import "os"
+import (
+	"os"
+)
 
 var (
 	Username       string
@@ -12,6 +14,8 @@ var (
 	CollectionUser string
 	MongoUsersPort string
 	LogLevel       string
+	ExpiryHour     string
+	AppName        string
 )
 
 func ConfigInit() {
@@ -24,4 +28,6 @@ func ConfigInit() {
 	CollectionUser = os.Getenv("MONGO_INITDB_COLLECTION")
 	MongoUsersPort = os.Getenv("MONGO_USERS_PORT")
 	LogLevel = os.Getenv("LOG_LEVEL")
+	ExpiryHour = os.Getenv("EXPIRY_HOUR")
+	AppName = os.Getenv("APP_NAME")
 }
