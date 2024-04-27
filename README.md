@@ -1,6 +1,7 @@
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 ![GitHub Contributions](https://img.shields.io/github/contributors/maestrom4/time-management-microservices)
 ![GitHub Stars](https://img.shields.io/github/stars/maestrom4/auth-service)
+![Go Test](https://github.com/maestrom4/auth-service/actions/workflows/test.yml/badge.svg?branch=develop)
 
 # Auth Service
 
