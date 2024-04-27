@@ -2,6 +2,7 @@ package middleware_test
 
 import (
 	mdl "auth-service/internal/middleware"
+	mks "auth-service/internal/middleware/mocks"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -37,7 +38,7 @@ func TestAuthMiddleware(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			router := gin.New()
-			router.Use(mdl.AuthMiddleware(mdl.MockParseToken))
+			router.Use(mdl.AuthMiddleware(mks.MockParseToken))
 			router.GET("/graphql", func(c *gin.Context) {
 				userID, exists := c.Get("userID")
 				if exists {
