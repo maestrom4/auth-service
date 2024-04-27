@@ -24,8 +24,11 @@ jobs:
       run: go get -v -t -d ./...
 
     - name: Run tests with coverage
-      run: go test ./... -coverprofile=coverage.txt -covermode=atomic -race
-      working-directory: ./path/to/your/tests # Update this to the directory containing your Go tests
+      run: |
+        go test ./... -coverprofile=coverage.txt -covermode=atomic -race
+        cat coverage.txt >> coverage-all.txt
+      working-directory: ${{ github.workspace }}
+
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v4.0.1
