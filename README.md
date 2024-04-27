@@ -1,36 +1,52 @@
 # Auth Service
 
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+![GitHub Contributions](https://img.shields.io/github/contributors/maestrom4/time-management-microservices)
+![GitHub Stars](https://img.shields.io/github/stars/maestrom4/auth-service)
+
 ## Overview
-This service handles Authentication, Authorization, registration.
+The Auth Service provides functionality for Authentication, Authorization, and user registration.
 
-## Setup with docker
-To run this project, install it locally using npm:
+## Technologies Used
+- Golang
+- GraphQL
+- Gin Framework
+- Docker Compose
+- Testify for unit testing
+- Logrus for logging
 
-```bash
-npm install
-npm start
+## Setup with Docker
+To run this project locally, follow these steps:
 
-docker build -t auth-service .
-docker run -p 8085:8080 --name file-gen-service file-gen-service
+1. Clone the repository and navigate to the project directory.
+2. Build the Docker image:
+    ```bash
+    docker build -t auth-service .
+    ```
+3. Run the Docker container:
+    ```bash
+    docker run -p 8085:8080 --name auth-service auth-service
+    ```
+   If you're using a local registry:
+    ```bash
+    docker build -t localhost:5000/auth-service:latest .
+    docker run -p 8085:8080 localhost:5000/auth-service:latest
+    ```
+4. Test the API:
+    ```bash
+    curl http://localhost:8080/api/health
+    ```
+   Expected response:
+    ```json
+    { "message": "Hello from the API!" }
+    ```
+   Remember to check the logs for more information.
 
-# if to local registry
-docker build -t localhost:5000/auth-service:latest .
-docker run -p 8085:8080 localhost:5000/auth-service:latest
-```
-Test the api 
-```bash
-curl http://localhost:8080/api/health
-```
-```bash
-response { "message": "Hello from the API!" }
-```
-''check the logs also''
+## Postman Testing
+![Postman Testing](https://github.com/maestrom4/auth-service/blob/develop/postmanTesting.png)
 
-### Postman testing
-![GitHub Logo](https://github.com/maestrom4/auth-service/blob/develop/postmanTesting.png)
-
-- Click collections
-- Click new select Graphql
-- Always click the reload button highlighted in the screenshot.
-- Tick/untick the checkbox query/mutation schema 
-- Click Query
+1. Click on collections.
+2. Select the GraphQL collection.
+3. Click the reload button highlighted in the screenshot to refresh the collection.
+4. Tick/untick the checkbox for query/mutation schema.
+5. Click Query to execute the selected operation.
