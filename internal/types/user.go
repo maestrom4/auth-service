@@ -6,8 +6,9 @@ type RegistrationResponse struct {
 }
 
 type LoginResponse struct {
-	Token    string `json:"token"`
-	ID       string `bson:"_id,omitempty"`
-	Username string `bson:"username"`
-	Message  string `json:"message"`
+	Token      string `json:"token"`
+	Username   string `json:"username"`
+	Message    string `json:"message"`
+	IsLoggedIn bool   `json: "isLoggedIn"`
+	UserId     string `json: "userId"`
 }

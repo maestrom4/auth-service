@@ -1,9 +1,11 @@
 package routes
 
 import (
+	v "auth-service/internal/config"
 	"auth-service/internal/graphql"
 	glq "auth-service/internal/graphql"
 	mdl "auth-service/internal/middleware"
+	u "auth-service/utils"
 	"context"
 
 	"github.com/gin-gonic/gin"
@@ -18,9 +20,33 @@ func GraphQLHandler() gin.HandlerFunc {
 	})
 
 	return func(c *gin.Context) {
-		// This step ensures that the context includes what's been set in Gin's context
-		ctx := context.WithValue(c.Request.Context(), "resolver", c.MustGet("resolver"))
+		// userID := c.MustGet(string(v.UserIDKey))
+		// ctx := context.WithValue(c.Request.Context(), string(v.ResolverKey), c.MustGet(string(v.ResolverKey)))
+		// ctx = context.WithValue(c.Request.Context(), v.UserIDKey, userID)
+		// rWithCtx := c.Request.WithContext(ctx)
+		// h.ServeHTTP(c.Writer, rWithCtx)
+
+		// ctx := context.WithValue(c.Request.Context(), string(v.ResolverKey), c.MustGet(string(v.ResolverKey)))
+		// rWithCtx := c.Request.WithContext(ctx)
+		// h.ServeHTTP(c.Writer, rWithCtx)
+		resolver := c.MustGet(string(v.ResolverKey))
+
+		// Retrieve the userID from Gin's context
+		userID := c.MustGet(string(v.UserIDKey))
+
+		// Start with the request's current context
+		ctx := c.Request.Context()
+
+		// Add the resolver to the context
+		ctx = context.WithValue(ctx, string(v.ResolverKey), resolver)
+
+		// Add the userID to the context
+		ctx = context.WithValue(ctx, string(v.UserIDKey), userID)
+
+		// Create a new request with the updated context
 		rWithCtx := c.Request.WithContext(ctx)
+
+		// Serve the HTTP request with the new context
 		h.ServeHTTP(c.Writer, rWithCtx)
 	}
 }
@@ -33,7 +59,7 @@ func RegisterRoutes(r *gin.Engine) {
 	})
 	r.Use(mdl.SecureHeadersMiddleware())
 	r.Use(mdl.ResolverMiddleware())
-	r.Use(mdl.AuthMiddleware())
+	r.Use(mdl.AuthMiddleware(u.ParseToken))
 	r.POST("/graphql", GraphQLHandler())
 	// router.POST("/graphql", gin.WrapH(h))
 	r.GET("/graphql", gin.WrapH(h))

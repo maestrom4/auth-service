@@ -1,6 +1,7 @@
 package graphql
 
 import (
+	cfg "auth-service/internal/config"
 	"errors"
 
 	"github.com/graphql-go/graphql"
@@ -19,7 +20,9 @@ var LoginQuerySchema = &graphql.Field{
 	},
 	Resolve: func(p graphql.ResolveParams) (interface{}, error) {
 
-		resolver, ok := p.Context.Value("resolver").(*Resolver)
+		resolver, ok := p.Context.Value(string(cfg.ResolverKey)).(*Resolver)
+		userID, _ := p.Context.Value(string(cfg.UserIDKey)).(string)
+		log.Debugln("LoginQuerySchema userID: ", userID)
 		if !ok {
 			return nil, errors.New("could not get the resolver from the context")
 		}
@@ -27,7 +30,7 @@ var LoginQuerySchema = &graphql.Field{
 		if err != nil {
 			return nil, err
 		}
-		log.Debugln("user: ", user)
+		log.Debugln("LoginQuerySchema user: ", user)
 
 		return user, nil
 	},
@@ -40,7 +43,16 @@ var LoginResponseType = graphql.NewObject(graphql.ObjectConfig{
 			Type: graphql.NewNonNull(graphql.String),
 		},
 		"userId": &graphql.Field{
+			Type: graphql.String,
+		},
+		"username": &graphql.Field{
 			Type: graphql.NewNonNull(graphql.String),
+		},
+		"message": &graphql.Field{
+			Type: graphql.String,
+		},
+		"isLoggedIn": &graphql.Field{
+			Type: graphql.Boolean,
 		},
 	},
 })
