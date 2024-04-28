@@ -32,6 +32,7 @@ func CreateToken(userID string, secretKey string) (string, error) {
 
 	return tokenString, nil
 }
+
 func ValidateToken(tokenString string, secretKey string) (*models.User, error) {
 	claims := &t.TokenClaims{}
 	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
@@ -69,34 +70,10 @@ func ValidateToken(tokenString string, secretKey string) (*models.User, error) {
 	return user, nil
 }
 
-// func ValidateToken(tokenString string, secretKey string) (*models.User, error) {
-// 	claims := &t.TokenClaims{}
-// 	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
-// 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-// 			return nil, errors.New("unexpected signing method")
-// 		}
-// 		return []byte(secretKey), nil
-// 	})
-
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	if !token.Valid {
-// 		return nil, errors.New("invalid or expired token")
-// 	}
-
-// 	user := &models.User{
-// 		ID: claims.UserID,
-// 	}
-// 	return user, nil
-// }
-
 func ParseToken(tokenString, secretKey string) (string, error) {
-	claims := &t.TokenClaims{} // Ensure that TokenClaims includes a UserID field properly.
+	claims := &t.TokenClaims{}
 
 	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
-		// Check if the signing method is as expected
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Method.Alg())
 		}
@@ -113,94 +90,3 @@ func ParseToken(tokenString, secretKey string) (string, error) {
 
 	return claims.UserID, nil
 }
-
-// func ParseToken(tokenString, secretKey string) (string, error) {
-// 	claims := &t.TokenClaims{}
-// 	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
-// 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-// 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
-// 		}
-// 		return []byte(secretKey), nil
-// 	})
-
-// 	if err != nil {
-// 		return "", err
-// 	}
-
-// 	if !token.Valid {
-// 		return "", errors.New("invalid or expired token")
-// 	}
-
-// 	return claims.UserID, nil
-// }
-
-// func ValidateToken(tokenString string) (*models.User, error) {
-// 	secretKey := cfg.JwtSecretKey
-// 	if secretKey == "" {
-// 		return nil, errors.New("JWT secret key is not set")
-// 	}
-
-// 	claims := &t.TokenClaims{}
-
-// 	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
-
-// 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-// 			return nil, errors.New("unexpected signing method")
-// 		}
-// 		return []byte(secretKey), nil
-// 	})
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	if claims, ok := token.Claims.(*t.TokenClaims); ok && token.Valid {
-// 		if claims.ExpiresAt != nil && claims.ExpiresAt.Time.Before(time.Now()) {
-// 			return nil, errors.New("token has expired")
-// 		}
-
-// 		user := &models.User{
-// 			ID: claims.UserID,
-// 		}
-// 		return user, nil
-// 	}
-
-// 	return nil, errors.New("invalid token")
-// }
-
-// func ParseToken(tokenString, secretKey string) (string, error) {
-// 	token, err := jwt.ParseWithClaims(tokenString, &t.StdTokenClaims{}, func(token *jwt.Token) (interface{}, error) {
-// 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-// 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
-// 		}
-
-// 		return []byte(secretKey), nil
-// 	})
-
-// 	if err != nil {
-// 		return "", err
-// 	}
-
-// 	if claims, ok := token.Claims.(*t.StdTokenClaims); ok && token.Valid {
-// 		return claims.UserId, nil
-// 	} else {
-// 		return "", err
-// 	}
-// }
-
-// func CreateToken(userID string, saltPassKey string) (string, error) {
-// 	if userID == "" {
-// 		return "", errors.New("empty userID")
-// 	}
-
-// 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-// 		"userID": userID,
-// 		"exp":    time.Now().Add(24 * time.Hour).Unix(),
-// 	})
-
-// 	tokenString, err := token.SignedString([]byte(saltPassKey))
-// 	if err != nil {
-// 		return "", err
-// 	}
-
-// 	return tokenString, nil
-// }
