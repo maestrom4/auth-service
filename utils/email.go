@@ -1,7 +1,7 @@
 package utils
 
 import (
-	t "auth-service/internal/types"
+	"auth-service/internal/types"
 	"strings"
 
 	"net/smtp"
@@ -9,18 +9,20 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func SendVerificationEmail(eData t.EmailOpt) error {
-	// from := base64.StdEncoding.EncodeToString([]byte(eData.EmailFrom))
-	// password := base64.StdEncoding.EncodeToString([]byte(eData.Password))
-	// log.Debugf("Encoded username: %s", from)
-	// log.Debugf("Encoded password: %s", password)
+// Note: move interfaces to another folder later.
+type EmailSender interface {
+	SendMail(addr string, a smtp.Auth, from string, to []string, msg []byte) error
+}
 
+type SmtpClient struct{}
+
+func (s *SmtpClient) SendMail(addr string, a smtp.Auth, from string, to []string, msg []byte) error {
+	return smtp.SendMail(addr, a, from, to, msg)
+}
+
+func SendVerificationEmail(eData types.EmailOpt, sender EmailSender) error {
 	from := strings.TrimSpace(eData.EmailFrom)
 	password := strings.TrimSpace(eData.Password)
-
-	log.Debugf("from: %s", from)
-	log.Debugf("password: %s", password)
-
 	to := eData.Email
 	subject := eData.Message
 	body := eData.Body
@@ -42,7 +44,7 @@ func SendVerificationEmail(eData t.EmailOpt) error {
 	message += "\r\n" + body
 
 	auth := smtp.PlainAuth("", from, password, smtpHost)
-	err := smtp.SendMail(smtpHost+":"+smtpPort, auth, from, []string{to}, []byte(message))
+	err := sender.SendMail(smtpHost+":"+smtpPort, auth, from, []string{to}, []byte(message))
 	if err != nil {
 		log.Printf("Failed to send email: %v", err)
 		return err

@@ -7,7 +7,7 @@ import (
 	"auth-service/utils"
 	"errors"
 	"fmt"
-	"os"
+	"net/smtp"
 
 	"github.com/graphql-go/graphql"
 	log "github.com/sirupsen/logrus"
@@ -29,6 +29,16 @@ func (r *Resolver) UserResolver(p graphql.ResolveParams) (interface{}, error) {
 		return nil, err
 	}
 	return user, nil
+}
+
+type EmailSender interface {
+	SendMail(addr string, a smtp.Auth, from string, to []string, msg []byte) error
+}
+
+type SmtpClient struct{}
+
+func (s *SmtpClient) SendMail(addr string, a smtp.Auth, from string, to []string, msg []byte) error {
+	return smtp.SendMail(addr, a, from, to, msg)
 }
 
 func (r *Resolver) AddUserResolver(p graphql.ResolveParams) (interface{}, error) {
@@ -55,12 +65,6 @@ func (r *Resolver) AddUserResolver(p graphql.ResolveParams) (interface{}, error)
 		return nil, err
 	}
 
-	log.Printf("from: %s", fmt.Sprintf("'%s'", user.Email))
-	log.Printf("password: %s", fmt.Sprintf("'%s'", cfg.EmailPass))
-
-	log.Printf("SMTP From: '%s'", os.Getenv("SMTP_FROM"))
-	log.Printf("SMTP Password: '%s'", os.Getenv("SMTP_PASS"))
-
 	emailData := gql.EmailOpt{
 		Email:     user.Email,
 		Password:  cfg.EmailPass,
@@ -86,13 +90,12 @@ func (r *Resolver) AddUserResolver(p graphql.ResolveParams) (interface{}, error)
 		</html>`,
 	}
 	// Send verification email
-
-	err = utils.SendVerificationEmail(emailData)
+	smtpClient := &SmtpClient{}
+	err = utils.SendVerificationEmail(emailData, smtpClient)
 	if err != nil {
 		return nil, err
 	}
 
-	log.Debugln("token: ", token)
 	if user.ID == "" {
 		return nil, errors.New("failed to obtain user ID after creation")
 	}
