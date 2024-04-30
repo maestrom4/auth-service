@@ -7,7 +7,6 @@ import (
 	"auth-service/utils"
 	"errors"
 	"fmt"
-	"os"
 
 	"github.com/graphql-go/graphql"
 	log "github.com/sirupsen/logrus"
@@ -55,12 +54,6 @@ func (r *Resolver) AddUserResolver(p graphql.ResolveParams) (interface{}, error)
 		return nil, err
 	}
 
-	log.Printf("from: %s", fmt.Sprintf("'%s'", user.Email))
-	log.Printf("password: %s", fmt.Sprintf("'%s'", cfg.EmailPass))
-
-	log.Printf("SMTP From: '%s'", os.Getenv("SMTP_FROM"))
-	log.Printf("SMTP Password: '%s'", os.Getenv("SMTP_PASS"))
-
 	emailData := gql.EmailOpt{
 		Email:     user.Email,
 		Password:  cfg.EmailPass,
@@ -92,7 +85,6 @@ func (r *Resolver) AddUserResolver(p graphql.ResolveParams) (interface{}, error)
 		return nil, err
 	}
 
-	log.Debugln("token: ", token)
 	if user.ID == "" {
 		return nil, errors.New("failed to obtain user ID after creation")
 	}

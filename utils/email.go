@@ -10,17 +10,9 @@ import (
 )
 
 func SendVerificationEmail(eData t.EmailOpt) error {
-	// from := base64.StdEncoding.EncodeToString([]byte(eData.EmailFrom))
-	// password := base64.StdEncoding.EncodeToString([]byte(eData.Password))
-	// log.Debugf("Encoded username: %s", from)
-	// log.Debugf("Encoded password: %s", password)
 
 	from := strings.TrimSpace(eData.EmailFrom)
 	password := strings.TrimSpace(eData.Password)
-
-	log.Debugf("from: %s", from)
-	log.Debugf("password: %s", password)
-
 	to := eData.Email
 	subject := eData.Message
 	body := eData.Body
