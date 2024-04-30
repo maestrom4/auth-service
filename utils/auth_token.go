@@ -4,6 +4,8 @@ import (
 	cfg "auth-service/internal/config"
 	"auth-service/internal/models"
 	t "auth-service/internal/types"
+	"crypto/rand"
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"time"
@@ -53,17 +55,15 @@ func ValidateToken(tokenString string, secretKey string) (*models.User, error) {
 			} else if ve.Errors&jwt.ValidationErrorSignatureInvalid != 0 {
 				return nil, errors.New("signature validation failed")
 			}
-			// Add more checks based on the errors you wish to catch
+
 		}
 		return nil, errors.New("token is invalid")
 	}
 
-	// Ensure the userID is available in the token
 	if claims.UserID == "" {
 		return nil, errors.New("user ID not found in token")
 	}
 
-	// At this point, the token is valid, and UserID is present, construct the user model
 	user := &models.User{
 		ID: claims.UserID,
 	}
@@ -89,4 +89,13 @@ func ParseToken(tokenString, secretKey string) (string, error) {
 	}
 
 	return claims.UserID, nil
+}
+
+func GenerateVerificationToken(userID string) (string, error) {
+	token := make([]byte, 32)
+	_, err := rand.Read(token)
+	if err != nil {
+		return "", err
+	}
+	return base64.StdEncoding.EncodeToString(token), nil
 }

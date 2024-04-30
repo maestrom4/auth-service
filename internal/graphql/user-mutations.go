@@ -5,31 +5,30 @@ import (
 	"errors"
 
 	"github.com/graphql-go/graphql"
-	log "github.com/sirupsen/logrus"
 )
 
-var UserMutx = &graphql.Field{
-	Type: gql.UserType,
-	Args: graphql.FieldConfigArgument{
-		"name": &graphql.ArgumentConfig{
-			Type: graphql.NewNonNull(graphql.String),
-		},
-		"email": &graphql.ArgumentConfig{
-			Type: graphql.NewNonNull(graphql.String),
-		},
-		"hashed_password": &graphql.ArgumentConfig{
-			Type: graphql.NewNonNull(graphql.String),
-		},
-	},
-	Resolve: func(p graphql.ResolveParams) (interface{}, error) {
-		resolver, ok := p.Context.Value("resolver").(*Resolver)
-		if !ok {
-			return nil, errors.New("could not get the resolver from the context")
-		}
-		log.Debugln("p: ", p)
-		return resolver.AddUserResolver(p)
-	},
-}
+// var UserMutx = &graphql.Field{
+// 	Type: gql.UserType,
+// 	Args: graphql.FieldConfigArgument{
+// 		"name": &graphql.ArgumentConfig{
+// 			Type: graphql.NewNonNull(graphql.String),
+// 		},
+// 		"email": &graphql.ArgumentConfig{
+// 			Type: graphql.NewNonNull(graphql.String),
+// 		},
+// 		"hashed_password": &graphql.ArgumentConfig{
+// 			Type: graphql.NewNonNull(graphql.String),
+// 		},
+// 	},
+// 	Resolve: func(p graphql.ResolveParams) (interface{}, error) {
+// 		resolver, ok := p.Context.Value("resolver").(*Resolver)
+// 		if !ok {
+// 			return nil, errors.New("could not get the resolver from the context")
+// 		}
+// 		log.Debugln("p: ", p)
+// 		return resolver.AddUserResolver(p)
+// 	},
+// }
 
 var UserUpdateMutx = &graphql.Field{
 	Type: gql.UserType,

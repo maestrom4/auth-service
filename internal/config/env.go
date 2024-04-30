@@ -16,6 +16,11 @@ var (
 	LogLevel       string
 	ExpiryHour     string
 	AppName        string
+	Message        string
+	EmailFrom      string
+	SmtpHosts      string
+	SmtpPort       string
+	EmailPass      string
 )
 
 func ConfigInit() {
@@ -30,4 +35,9 @@ func ConfigInit() {
 	LogLevel = os.Getenv("LOG_LEVEL")
 	ExpiryHour = os.Getenv("EXPIRY_HOUR")
 	AppName = os.Getenv("APP_NAME")
+	Message = os.Getenv("SMTP_SUBJECT")
+	EmailFrom = os.Getenv("SMTP_FROM")
+	SmtpHosts = os.Getenv("SMTP_HOSTS")
+	SmtpPort = os.Getenv("SMTP_PORT")
+	EmailPass = os.Getenv("SMTP_PASS")
 }

@@ -13,7 +13,7 @@ import (
 var RegistrationMutx = &graphql.Field{
 	Type: RegistrationResponseType,
 	Args: graphql.FieldConfigArgument{
-		"username": &graphql.ArgumentConfig{
+		"email": &graphql.ArgumentConfig{
 			Type: graphql.NewNonNull(graphql.String),
 		},
 		"password": &graphql.ArgumentConfig{
