@@ -15,7 +15,6 @@ The Auth Service is part of a microservices architecture focused on handling aut
 - **Docker**: A set of platform-as-a-service products that use OS-level virtualization to deliver software in packages called containers.
 - **Testify**: A Go testing toolkit with common assertions and mocks that plays nicely with the standard library.
 - **Logrus**: A structured logger for Go, completely API compatible with the standard library logger.
-- 
 
 ## Installation
 
