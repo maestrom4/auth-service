@@ -40,13 +40,14 @@ func (ur *UserRepository) GetUserByID(ctx context.Context, id string) (*models.U
 	return &user, nil
 }
 
-func (ur *UserRepository) AddUser(ctx context.Context, username, hashedPassword string) (*models.User, error) {
+func (ur *UserRepository) AddUser(ctx context.Context, email, hashedPassword string) (*models.User, error) {
 	now := time.Now().Format(time.RFC3339)
 	user := models.User{
-		Username:       username,
+		Email:          email,
 		HashedPassword: hashedPassword,
 		CreatedAt:      now,
 		LastLogin:      now,
+		IsVerified:     false,
 	}
 
 	result, err := ur.Collection.InsertOne(ctx, user)
@@ -90,6 +91,19 @@ func (ur *UserRepository) DeleteUser(ctx context.Context, id string) error {
 func (ur *UserRepository) GetUserByUsername(ctx context.Context, username string) (*models.User, error) {
 	var user models.User
 	filter := bson.M{"username": username}
+	err := ur.Collection.FindOne(ctx, filter).Decode(&user)
+	if err != nil {
+		if err == mongo.ErrNoDocuments {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return &user, nil
+}
+
+func (ur *UserRepository) GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
+	var user models.User
+	filter := bson.M{"email": email}
 	err := ur.Collection.FindOne(ctx, filter).Decode(&user)
 	if err != nil {
 		if err == mongo.ErrNoDocuments {

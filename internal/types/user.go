@@ -7,7 +7,7 @@ type RegistrationResponse struct {
 
 type LoginResponse struct {
 	Token      string `json:"token"`
-	Username   string `json:"username"`
+	Email      string `json:"email"`
 	Message    string `json:"message"`
 	IsLoggedIn bool   `json: "isLoggedIn"`
 	UserId     string `json: "userId"`
