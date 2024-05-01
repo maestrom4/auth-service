@@ -40,14 +40,15 @@ func (ur *UserRepository) GetUserByID(ctx context.Context, id string) (*models.U
 	return &user, nil
 }
 
-func (ur *UserRepository) AddUser(ctx context.Context, email, hashedPassword string) (*models.User, error) {
+func (ur *UserRepository) AddUser(ctx context.Context, email, hashedPassword, vToken string) (*models.User, error) {
 	now := time.Now().Format(time.RFC3339)
 	user := models.User{
-		Email:          email,
-		HashedPassword: hashedPassword,
-		CreatedAt:      now,
-		LastLogin:      now,
-		IsVerified:     false,
+		Email:             email,
+		HashedPassword:    hashedPassword,
+		CreatedAt:         now,
+		LastLogin:         now,
+		IsVerified:        false,
+		VerificationToken: vToken,
 	}
 
 	result, err := ur.Collection.InsertOne(ctx, user)
@@ -112,4 +113,14 @@ func (ur *UserRepository) GetUserByEmail(ctx context.Context, email string) (*mo
 		return nil, err
 	}
 	return &user, nil
+}
+
+func (ur *UserRepository) VerifyUserByToken(ctx context.Context, token string) (*models.User, error) {
+	update := bson.M{"$set": bson.M{"isVerified": true}}
+	var updatedUser models.User
+	err := ur.Collection.FindOneAndUpdate(ctx, bson.M{"verificationToken": token}, update).Decode(&updatedUser)
+	if err != nil {
+		return nil, err
+	}
+	return &updatedUser, nil
 }

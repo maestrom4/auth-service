@@ -1,80 +1,51 @@
 package utils_test
 
-// import (
-// 	u "auth-service/utils"
-// 	"errors"
-// 	"testing"
+import (
+	"encoding/base64"
+	"testing"
 
-// 	"github.com/golang-jwt/jwt/v4"
-// 	"github.com/stretchr/testify/assert"
-// 	"github.com/stretchr/testify/mock"
-// )
+	u "auth-service/utils"
 
-// // MockTokenParser is a mock type for the jwt parsing function
-// // type MockTokenParser struct {
-// // 	mock.Mock
-// // }
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+)
 
-// // func (m *MockTokenParser) ParseWithClaims(tokenString string, claims jwt.Claims, keyFunc jwt.Keyfunc) (*jwt.Token, error) {
-// // 	args := m.Called(tokenString, claims, keyFunc)
-// // 	return args.Get(0).(*jwt.Token), args.Error(1)
-// // }
+func TestGenerateVerificationToken(t *testing.T) {
+	testCases := []struct {
+		name    string
+		wantErr bool
+	}{
+		{
+			name:    "Token should not be empty",
+			wantErr: false,
+		},
+		{
+			name:    "Token should be valid base64",
+			wantErr: false,
+		},
+		{
+			name:    "Token should have length greater than 0",
+			wantErr: false,
+		},
+		{
+			name:    "Expected token length does not match",
+			wantErr: false,
+		},
+	}
 
-// // // TestParseToken tests the ParseToken function
-// // func TestParseToken(t *testing.T) {
-// // 	tests := []struct {
-// // 		name           string
-// // 		tokenString    string
-// // 		secretKey      string
-// // 		mockReturn     *jwt.Token
-// // 		mockError      error
-// // 		expectedError  error
-// // 		expectedUserID string
-// // 	}{
-// // 		{
-// // 			name:           "valid token",
-// // 			tokenString:    "valid.token.string",
-// // 			secretKey:      "secret",
-// // 			mockReturn:     &jwt.Token{Valid: true},
-// // 			mockError:      nil,
-// // 			expectedError:  nil,
-// // 			expectedUserID: "123456",
-// // 		},
-// // 		{
-// // 			name:           "invalid token",
-// // 			tokenString:    "invalid.token.string",
-// // 			secretKey:      "secret",
-// // 			mockReturn:     nil,
-// // 			mockError:      errors.New("invalid token"),
-// // 			expectedError:  errors.New("invalid token"),
-// // 			expectedUserID: "",
-// // 		},
-// // 	}
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			token, err := u.GenerateVerificationToken()
 
-// // 	for _, tt := range tests {
-// // 		t.Run(tt.name, func(t *testing.T) {
-// // 			mockTokenParser := new(MockTokenParser)
-// // 			mockClaims := &struct {
-// // 				jwt.RegisteredClaims
-// // 				UserID string `json:"userId"`
-// // 			}{} // This should be your actual type
-// // 			mockTokenParser.On(
-// // 				"ParseWithClaims",
-// // 				tt.tokenString,
-// // 				mock.IsType(mockClaims),
-// // 				mock.AnythingOfType("jwt.Keyfunc"),
-// // 			).Return(tt.mockReturn, tt.mockError)
-// // 			// Use the TokenParser interface to parse the token
-// // 			userID, err := u.ParseToken(tt.tokenString, tt.secretKey, mockTokenParser)
+			if !tc.wantErr {
+				require.NoError(t, err)
+				assert.NotEmpty(t, token, "Token should not be empty")
+				_, decodeErr := base64.StdEncoding.DecodeString(token)
+				assert.NoError(t, decodeErr, "Token should be valid base64")
+				assert.True(t, len(token) > 0, "Token should have length greater than 0")
+				assert.Equal(t, 44, len(token), "Expected token length does not match")
 
-// // 			if tt.expectedError != nil {
-// // 				assert.EqualError(t, err, tt.expectedError.Error())
-// // 			} else {
-// // 				assert.NoError(t, err)
-// // 				assert.Equal(t, tt.expectedUserID, userID)
-// // 			}
-
-// // 			mockTokenParser.AssertExpectations(t)
-// // 		})
-// // 	}
-// // }
+			}
+		})
+	}
+}

@@ -73,12 +73,10 @@ func TestCreateToken(t *testing.T) {
 		},
 	}
 
-	// Initialize logrus logger
 	logger := logrus.New()
 
 	for _, tc := range testCases {
 		t.Run(tc.Name, func(t *testing.T) {
-			// Call the function with test case parameters
 			tokenString, err := utils.CreateToken(tc.UserID, cfg.SaltPassKey)
 
 			// Log the token

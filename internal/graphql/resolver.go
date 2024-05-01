@@ -53,41 +53,43 @@ func (r *Resolver) AddUserResolver(p graphql.ResolveParams) (interface{}, error)
 	if err != nil {
 		return nil, err
 	}
-
-	user, err := r.UserRepository.AddUser(p.Context, email, hashedPassword)
-	if err != nil {
-		return nil, err
-	}
-
 	// Generate verification token
-	token, err := utils.GenerateVerificationToken(user.ID)
+	verificationToken, err := utils.GenerateVerificationToken()
 	if err != nil {
 		return nil, err
 	}
+
+	user, err := r.UserRepository.AddUser(p.Context, email, hashedPassword, verificationToken)
+	if err != nil {
+		return nil, err
+	}
+
+	verificationLink := fmt.Sprintf("%s/verify?token=%s", cfg.BaseUrl, verificationToken)
+	bodyAndLink := fmt.Sprintf(`<!DOCTYPE html>
+	<html>
+	<head>
+		<title>Email Verification</title>
+	</head>
+	<body>
+		<h1>Verify Your Email Address</h1>
+		<p>Hello,</p>
+		<p>Thank you for registering with us. To complete your registration, please verify your email address by clicking the link below:</p>
+		<a href="%s">Verify Email</a>
+		<p>If you did not request this verification, please ignore this email.</p>
+		<p>Thank you!</p>
+		<p>The YourService Team</p>
+	</body>
+	</html>`, verificationLink)
 
 	emailData := gql.EmailOpt{
 		Email:     user.Email,
 		Password:  cfg.EmailPass,
-		Token:     token,
+		Token:     verificationToken,
 		Message:   cfg.Message,
 		EmailFrom: cfg.EmailFrom,
 		SmtpHosts: cfg.SmtpHosts,
 		SmtpPort:  cfg.SmtpPort,
-		Body: `<!DOCTYPE html>
-		<html>
-		<head>
-			<title>Email Verification</title>
-		</head>
-		<body>
-			<h1>Verify Your Email Address</h1>
-			<p>Hello,</p>
-			<p>Thank you for registering with us. To complete your registration, please verify your email address by clicking the link below:</p>
-			<a href="http://yourdomain.com/verify?token=YOUR_VERIFICATION_TOKEN">Verify Email</a>
-			<p>If you did not request this verification, please ignore this email.</p>
-			<p>Thank you!</p>
-			<p>The YourService Team</p>
-		</body>
-		</html>`,
+		Body:      bodyAndLink,
 	}
 	// Send verification email
 	smtpClient := &SmtpClient{}
