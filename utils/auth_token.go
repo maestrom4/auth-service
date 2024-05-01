@@ -2,7 +2,6 @@ package utils
 
 import (
 	cfg "auth-service/internal/config"
-	"auth-service/internal/models"
 	t "auth-service/internal/types"
 	"crypto/rand"
 	"encoding/base64"
@@ -35,41 +34,6 @@ func CreateToken(userID string, secretKey string) (string, error) {
 	return tokenString, nil
 }
 
-func ValidateToken(tokenString string, secretKey string) (*models.User, error) {
-	claims := &t.TokenClaims{}
-	token, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
-		}
-		return []byte(secretKey), nil
-	})
-
-	if err != nil {
-		return nil, fmt.Errorf("error parsing token: %v", err)
-	}
-
-	if !token.Valid {
-		if ve, ok := err.(*jwt.ValidationError); ok {
-			if ve.Errors&jwt.ValidationErrorExpired != 0 {
-				return nil, errors.New("token has expired")
-			} else if ve.Errors&jwt.ValidationErrorSignatureInvalid != 0 {
-				return nil, errors.New("signature validation failed")
-			}
-
-		}
-		return nil, errors.New("token is invalid")
-	}
-
-	if claims.UserID == "" {
-		return nil, errors.New("user ID not found in token")
-	}
-
-	user := &models.User{
-		ID: claims.UserID,
-	}
-	return user, nil
-}
-
 func ParseToken(tokenString, secretKey string) (string, error) {
 	claims := &t.TokenClaims{}
 
@@ -91,7 +55,7 @@ func ParseToken(tokenString, secretKey string) (string, error) {
 	return claims.UserID, nil
 }
 
-func GenerateVerificationToken(userID string) (string, error) {
+func GenerateVerificationToken() (string, error) {
 	token := make([]byte, 32)
 	_, err := rand.Read(token)
 	if err != nil {
