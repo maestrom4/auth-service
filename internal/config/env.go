@@ -21,6 +21,7 @@ var (
 	SmtpHosts      string
 	SmtpPort       string
 	EmailPass      string
+	BaseUrl        string
 )
 
 func ConfigInit() {
@@ -40,4 +41,5 @@ func ConfigInit() {
 	SmtpHosts = os.Getenv("SMTP_HOSTS")
 	SmtpPort = os.Getenv("SMTP_PORT")
 	EmailPass = os.Getenv("SMTP_PASS")
+	BaseUrl = os.Getenv("BASE_URL")
 }
