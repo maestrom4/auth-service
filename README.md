@@ -5,6 +5,7 @@
 
 # Auth Service
 
+
 ## Overview
 The Auth Service is part of a microservices architecture focused on handling authentication and authorization. It facilitates user registration and credential verification, leveraging a range of modern technologies for robust, scalable, and secure implementations.
 
